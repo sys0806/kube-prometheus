@@ -11,7 +11,13 @@ metadata:
   namespace: monitoring
 spec:
   image: quay.io/prometheus/alertmanager:v0.21.0
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "prom"
+    effect: "NoSchedule"
   nodeSelector:
+    type: prom
     kubernetes.io/os: linux
   podMetadata:
     labels:

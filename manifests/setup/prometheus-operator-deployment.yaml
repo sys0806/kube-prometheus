@@ -27,6 +27,8 @@ spec:
       - args:
         - --kubelet-service=kube-system/kubelet
         - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.47.0
+#        - storage.tsdb.min-block-duration=10m
+#        - storage.tsdb.max-block-duration=10m
         image: quay.io/prometheus-operator/prometheus-operator:v0.47.0
         name: prometheus-operator
         ports:
@@ -63,7 +65,13 @@ spec:
           runAsNonRoot: true
           runAsUser: 65532
       nodeSelector:
+        type: prom
         kubernetes.io/os: linux
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "prom"
+        effect: "NoSchedule"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

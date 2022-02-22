@@ -85,5 +85,11 @@ spec:
           runAsNonRoot: true
           runAsUser: 65532
       nodeSelector:
+        type: prom
         kubernetes.io/os: linux
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "prom"
+        effect: "NoSchedule"
       serviceAccountName: kube-state-metrics

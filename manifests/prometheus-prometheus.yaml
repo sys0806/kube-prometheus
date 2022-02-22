@@ -10,6 +10,15 @@ metadata:
   name: k8s
   namespace: monitoring
 spec:
+  retention: 5d
+#  storage:
+#    volumeClaimTemplate:
+#      spec:
+#        storageClassName: ebs-prom
+#        accessModes: ["ReadWriteOnce"]
+#        resources:
+#          requests:
+#            storage: 100Gi
   alerting:
     alertmanagers:
     - apiVersion: v2
@@ -19,7 +28,23 @@ spec:
   externalLabels: {}
   image: quay.io/prometheus/prometheus:v2.26.0
   nodeSelector:
+    type: prom
     kubernetes.io/os: linux
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - prometheus
+          topologyKey: "kubernetes.io/hostname"
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "prom"
+    effect: "NoSchedule"
   podMetadata:
     labels:
       app.kubernetes.io/component: prometheus

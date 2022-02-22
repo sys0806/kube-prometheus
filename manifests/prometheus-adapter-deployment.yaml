@@ -50,7 +50,13 @@ spec:
           name: config
           readOnly: false
       nodeSelector:
+        type: prom
         kubernetes.io/os: linux
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "prom"
+        effect: "NoSchedule"
       serviceAccountName: prometheus-adapter
       volumes:
       - emptyDir: {}
